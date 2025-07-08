@@ -40,6 +40,17 @@ public class Product {
     @Column(name = "minOrder")
     private int minOrder;
 
+    @Column(name = "enControlPrice")
+    private int enControlPrice;
+
+    public int getEnControlPrice() {
+        return enControlPrice;
+    }
+
+    public void setEnControlPrice(int enControlPrice) {
+        this.enControlPrice = enControlPrice;
+    }
+
     public int getMinOrder() {
         return minOrder;
     }

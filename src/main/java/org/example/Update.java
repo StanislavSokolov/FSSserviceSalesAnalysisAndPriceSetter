@@ -70,10 +70,12 @@ public class Update extends Thread {
                                             sum = sum + 1;
                                         }
                                     }
-                                    if (sum < p.getMinOrder()) {
-                                        session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*0.99)), String.valueOf(p.getDiscount())));
-                                    } else if (sum > p.getMaxOrder())  {
-                                        session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*1.01)), String.valueOf(p.getDiscount())));
+                                    if (p.getEnControlPrice() == 1) {
+                                        if (sum < p.getMinOrder()) {
+                                            session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*0.99)), String.valueOf(p.getDiscount())));
+                                        } else if (sum > p.getMaxOrder())  {
+                                            session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*1.01)), String.valueOf(p.getDiscount())));
+                                        }
                                     }
                                 }
                             }
