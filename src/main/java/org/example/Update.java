@@ -66,14 +66,21 @@ public class Update extends Thread {
                                         }
                                     }
                                     if (p.getEnControlPrice() == 1) {
-                                        if (sum < p.getMinOrder()) {
-                                            System.out.println("Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
-                                            session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*0.99)), String.valueOf(p.getDiscount())));
-                                        } else if (sum > p.getMaxOrder())  {
-                                            System.out.println("Уеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
-                                            session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*1.01)), String.valueOf(p.getDiscount())));
-                                        } else {
-                                            System.out.println("Стоимость не изменилась " + p.getSubject() + " " + p.getSupplierArticle());
+                                        int stocks = 0;
+                                        for (Stock s: p.getStocks()) {
+                                            stocks = stocks + s.getQuantity();
+                                        }
+                                        System.out.println(p.getSubject() + " (" + p.getSupplierArticle() + ") на остатках " + stocks);
+                                        if (stocks > p.getMinOrder()) {
+                                            if (sum < p.getMinOrder()) {
+                                                System.out.println("Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
+                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 0.99)), String.valueOf(p.getDiscount())));
+                                            } else if (sum > p.getMaxOrder()) {
+                                                System.out.println("Увеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
+                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 1.01)), String.valueOf(p.getDiscount())));
+                                            } else {
+                                                System.out.println("Стоимость не изменилась " + p.getSubject() + " (" + p.getSupplierArticle() + ")");
+                                            }
                                         }
                                     }
                                 }
