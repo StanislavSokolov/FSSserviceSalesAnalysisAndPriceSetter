@@ -4,14 +4,9 @@ import org.example.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.lang.Integer.parseInt;
 
 public class Update extends Thread {
 
@@ -72,9 +67,13 @@ public class Update extends Thread {
                                     }
                                     if (p.getEnControlPrice() == 1) {
                                         if (sum < p.getMinOrder()) {
+                                            System.out.println("Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
                                             session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*0.99)), String.valueOf(p.getDiscount())));
                                         } else if (sum > p.getMaxOrder())  {
+                                            System.out.println("Уеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
                                             session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice()*1.01)), String.valueOf(p.getDiscount())));
+                                        } else {
+                                            System.out.println("Стоимость не изменилась " + p.getSubject() + " " + p.getSupplierArticle());
                                         }
                                     }
                                 }
