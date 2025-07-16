@@ -6,6 +6,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 public class Update extends Thread {
@@ -17,8 +19,17 @@ public class Update extends Thread {
         super.run();
         while (true) {
             try {
-                update(count);
-                sleep(60*1000*60*24);
+                LocalTime currentTime = LocalTime.now();
+                int minuteToCompare = 55;
+                int currentMinute = currentTime.getMinute();
+                int hourToCompare = 23;
+                int currentHour = currentTime.getHour();
+                if ((currentMinute == minuteToCompare) && (currentHour == hourToCompare)) {
+                    update(count);
+                    sleep(100*1000);
+                } else {
+                    sleep(50*1000);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
