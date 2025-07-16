@@ -55,6 +55,7 @@ public class Update extends Thread {
 
             if (count == 0) {
                 for (User user : users) {
+                    String text = "";
                     if (user.getNameShopWB() != null) {
                         if (user.getTokenStandartWB() != null) {
                             for (Product p: user.getProducts()) {
@@ -70,16 +71,15 @@ public class Update extends Thread {
                                         for (Stock s: p.getStocks()) {
                                             stocks = stocks + s.getQuantity();
                                         }
-                                        System.out.println(p.getSubject() + " (" + p.getSupplierArticle() + ") на остатках " + stocks);
                                         if (stocks > p.getMinOrder()) {
                                             if (sum < p.getMinOrder()) {
-                                                System.out.println("Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
+                                                text = text + "\n" + "Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle();
                                                 session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 0.99)), String.valueOf(p.getDiscount())));
                                             } else if (sum > p.getMaxOrder()) {
-                                                System.out.println("Увеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle());
+                                                text = text + "\n" + "Увеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle();
                                                 session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 1.01)), String.valueOf(p.getDiscount())));
                                             } else {
-                                                System.out.println("Стоимость не изменилась " + p.getSubject() + " (" + p.getSupplierArticle() + ")");
+                                                text = text + "\n" + "Стоимость не изменилась " + p.getSubject() + " " + p.getSupplierArticle();
                                             }
                                         }
                                     }
@@ -87,6 +87,7 @@ public class Update extends Thread {
                             }
                         }
                     }
+                    System.out.println(text);
                 }
             }
             session.getTransaction().commit();
