@@ -12,6 +12,15 @@ import java.util.List;
 
 public class Update extends Thread {
 
+    private int MINUTE_TO_PERFORM_ANALYSIS = 30;
+    private int HOUR_TO_PERFORM_ANALYSIS = 23;
+
+    private int MINUTE_TO_REDUCE_DISCOUNT = 0;
+    private int HOUR_TO_REDUCE_DISCOUNT = 4;
+
+    private int MINUTE_TO_INCREASE_DISCOUNT = 0;
+    private int HOUR_TO_INCREASE_DISCOUNT = 8;
+
     @Override
     public void run() {
         int count = 0;
@@ -20,12 +29,14 @@ public class Update extends Thread {
         while (true) {
             try {
                 LocalTime currentTime = LocalTime.now();
-                int minuteToCompare = 30;
                 int currentMinute = currentTime.getMinute();
-                int hourToCompare = 23;
                 int currentHour = currentTime.getHour();
-                if ((currentMinute == minuteToCompare) && (currentHour == hourToCompare)) {
-                    update(count);
+                if ((currentMinute == MINUTE_TO_PERFORM_ANALYSIS) && (currentHour == HOUR_TO_PERFORM_ANALYSIS)) {
+                    update(0);
+                } else if ((currentMinute == MINUTE_TO_REDUCE_DISCOUNT ) && (currentHour == HOUR_TO_REDUCE_DISCOUNT)) {
+                    update(1);
+                } else if ((currentMinute == MINUTE_TO_INCREASE_DISCOUNT ) && (currentHour == HOUR_TO_INCREASE_DISCOUNT)) {
+                    update(2);
                 }
                 sleep(50*1000);
             } catch (InterruptedException e) {
@@ -102,7 +113,47 @@ public class Update extends Thread {
                     }
                     System.out.println(text);
                 }
+            } else if (count == 1) {
+                for (User user : users) {
+                    String text = "";
+                    if (user.getNameShopWB() != null) {
+                        if (user.getTokenStandartWB() != null) {
+                            for (Product p: user.getProducts()) {
+                                if (!p.getSupplierArticle().equals("")) {
+                                    if (p.getEnChangeDiscount() == 1) {
+                                        if (p.getDiscount() > 22) {
+                                            session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getDiscount() - 23), String.valueOf(p.getPrice())));
+                                            p.setStatusChangeDiscount(1);
+                                            session.save(p);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    System.out.println(text);
+                }
+            } else if (count == 2) {
+            for (User user : users) {
+                String text = "";
+                if (user.getNameShopWB() != null) {
+                    if (user.getTokenStandartWB() != null) {
+                        for (Product p: user.getProducts()) {
+                            if (!p.getSupplierArticle().equals("")) {
+                                if (p.getEnChangeDiscount() == 1) {
+                                    if (p.getStatusChangeDiscount() == 1) {
+                                        session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getDiscount() + 23), String.valueOf(p.getPrice())));
+                                        p.setStatusChangeDiscount(0);
+                                        session.save(p);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                System.out.println(text);
             }
+        }
             session.getTransaction().commit();
         } finally {
             sessionFactory.close();
