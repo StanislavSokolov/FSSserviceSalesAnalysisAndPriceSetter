@@ -20,16 +20,14 @@ public class Update extends Thread {
         while (true) {
             try {
                 LocalTime currentTime = LocalTime.now();
-                int minuteToCompare = 55;
+                int minuteToCompare = 30;
                 int currentMinute = currentTime.getMinute();
                 int hourToCompare = 23;
                 int currentHour = currentTime.getHour();
                 if ((currentMinute == minuteToCompare) && (currentHour == hourToCompare)) {
                     update(count);
-                    sleep(100*1000);
-                } else {
-                    sleep(50*1000);
                 }
+                sleep(50*1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -85,10 +83,14 @@ public class Update extends Thread {
                                         if (stocks > p.getMinOrder()) {
                                             if (sum < p.getMinOrder()) {
                                                 text = text + "\n" + "Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle();
-                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 0.99)), String.valueOf(p.getDiscount())));
+                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 0.98)), String.valueOf(p.getDiscount())));
                                             } else if (sum > p.getMaxOrder()) {
                                                 text = text + "\n" + "Увеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle();
-                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 1.01)), String.valueOf(p.getDiscount())));
+                                                if (p.getPrice() * 0.03 < 15) {
+                                                    session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() + 15)), String.valueOf(p.getDiscount())));
+                                                } else {
+                                                    session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 1.03)), String.valueOf(p.getDiscount())));
+                                                }
                                             } else {
                                                 text = text + "\n" + "Стоимость не изменилась " + p.getSubject() + " " + p.getSupplierArticle();
                                             }
