@@ -43,6 +43,28 @@ public class Product {
     @Column(name = "enControlPrice")
     private int enControlPrice;
 
+    public int getEnChangeDiscount() {
+        return enChangeDiscount;
+    }
+
+    public void setEnChangeDiscount(int enChangeDiscount) {
+        this.enChangeDiscount = enChangeDiscount;
+    }
+
+    @Column(name = "enChangeDiscount")
+    private int enChangeDiscount;
+
+    public int getStatusChangeDiscount() {
+        return statusChangeDiscount;
+    }
+
+    public void setStatusChangeDiscount(int statusChangeDiscount) {
+        this.statusChangeDiscount = statusChangeDiscount;
+    }
+
+    @Column(name = "statusChangeDiscount")
+    private int statusChangeDiscount;
+
     public int getEnControlPrice() {
         return enControlPrice;
     }
