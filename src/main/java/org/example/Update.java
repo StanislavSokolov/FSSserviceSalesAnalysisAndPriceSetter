@@ -16,10 +16,10 @@ public class Update extends Thread {
     private int HOUR_TO_PERFORM_ANALYSIS = 23;
 
     private int MINUTE_TO_REDUCE_DISCOUNT = 0;
-    private int HOUR_TO_REDUCE_DISCOUNT = 4;
+    private int HOUR_TO_REDUCE_DISCOUNT = 2;
 
     private int MINUTE_TO_INCREASE_DISCOUNT = 0;
-    private int HOUR_TO_INCREASE_DISCOUNT = 8;
+    private int HOUR_TO_INCREASE_DISCOUNT = 6;
 
     @Override
     public void run() {
