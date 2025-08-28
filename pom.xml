@@ -141,7 +141,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.example.FSSserviceSalesAnalysisAndPriceSetter</mainClass>
+              <mainClass>org.example.FFSserviceSalesAnalysisAndPriceSetter</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>
