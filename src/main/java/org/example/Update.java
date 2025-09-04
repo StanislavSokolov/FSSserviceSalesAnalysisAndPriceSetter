@@ -110,6 +110,46 @@ public class Update extends Thread {
                     }
                     System.out.println(text);
                 }
+            } else if (count == 1) {
+                for (User user : users) {
+                    String text = "";
+                    if (user.getNameShopWB() != null) {
+                        if (user.getTokenStandartWB() != null) {
+                            for (Product p: user.getProducts()) {
+                                if (!p.getSupplierArticle().equals("")) {
+                                    if (p.getEnChangeDiscount() == 1) {
+                                        if (p.getDiscount() > 22) {
+                                            session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getDiscount() - 23), String.valueOf(p.getPrice())));
+                                            p.setStatusChangeDiscount(1);
+                                            p.setSaveDiscount(p.getDiscount());
+                                            session.save(p);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    System.out.println(text);
+                }
+            } else if (count == 2) {
+            for (User user : users) {
+                String text = "";
+                if (user.getNameShopWB() != null) {
+                    if (user.getTokenStandartWB() != null) {
+                        for (Product p: user.getProducts()) {
+                            if (!p.getSupplierArticle().equals("")) {
+                                if (p.getEnChangeDiscount() == 1) {
+                                    if (p.getStatusChangeDiscount() == 1) {
+                                        session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount() + 23), String.valueOf(p.getPrice())));
+                                        p.setStatusChangeDiscount(0);
+                                        session.save(p);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                System.out.println(text);
             }
             session.getTransaction().commit();
         } finally {

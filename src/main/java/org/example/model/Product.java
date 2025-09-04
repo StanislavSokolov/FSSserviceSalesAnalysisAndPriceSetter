@@ -65,6 +65,17 @@ public class Product {
     @Column(name = "statusChangeDiscount")
     private int statusChangeDiscount;
 
+    @Column(name = "saveDiscount")
+    private int saveDiscount;
+
+    public int getSaveDiscount() {
+        return saveDiscount;
+    }
+
+    public void setSaveDiscount(int saveDiscount) {
+        this.saveDiscount = saveDiscount;
+    }
+
     public int getEnControlPrice() {
         return enControlPrice;
     }
