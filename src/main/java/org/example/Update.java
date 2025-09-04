@@ -45,7 +45,6 @@ public class Update extends Thread {
         }
     }
 
-
     private void update(int count) {
 
 
@@ -95,10 +94,14 @@ public class Update extends Thread {
                                         if (stocks > p.getMinOrder()) {
                                             if (sum < p.getMinOrder()) {
                                                 text = text + "\n" + "Уменьшена стоимость " + p.getSubject() + " " + p.getSupplierArticle();
-                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 0.99)), String.valueOf(p.getDiscount())));
+                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 0.98)), String.valueOf(p.getDiscount())));
                                             } else if (sum > p.getMaxOrder()) {
                                                 text = text + "\n" + "Увеличена стоимость " + p.getSubject() + " " + p.getSupplierArticle();
-                                                session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 1.01)), String.valueOf(p.getDiscount())));
+                                                if (p.getPrice() * 0.03 < 15) {
+                                                    session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() + 15)), String.valueOf(p.getDiscount())));
+                                                } else {
+                                                    session.save(new QueueRequests(user.getId(), "wb", "prices", p.getNmId(), String.valueOf((int) ((int) p.getPrice() * 1.03)), String.valueOf(p.getDiscount())));
+                                                }
                                             } else {
                                                 text = text + "\n" + "Стоимость не изменилась " + p.getSubject() + " " + p.getSupplierArticle();
                                             }
@@ -132,24 +135,25 @@ public class Update extends Thread {
                     System.out.println(text);
                 }
             } else if (count == 2) {
-            for (User user : users) {
-                String text = "";
-                if (user.getNameShopWB() != null) {
-                    if (user.getTokenStandartWB() != null) {
-                        for (Product p: user.getProducts()) {
-                            if (!p.getSupplierArticle().equals("")) {
-                                if (p.getEnChangeDiscount() == 1) {
-                                    if (p.getStatusChangeDiscount() == 1) {
-                                        session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount() + 23), String.valueOf(p.getPrice())));
-                                        p.setStatusChangeDiscount(0);
-                                        session.save(p);
+                for (User user : users) {
+                    String text = "";
+                    if (user.getNameShopWB() != null) {
+                        if (user.getTokenStandartWB() != null) {
+                            for (Product p: user.getProducts()) {
+                                if (!p.getSupplierArticle().equals("")) {
+                                    if (p.getEnChangeDiscount() == 1) {
+                                        if (p.getStatusChangeDiscount() == 1) {
+                                            session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount() + 23), String.valueOf(p.getPrice())));
+                                            p.setStatusChangeDiscount(0);
+                                            session.save(p);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                    System.out.println(text);
                 }
-                System.out.println(text);
             }
             session.getTransaction().commit();
         } finally {
