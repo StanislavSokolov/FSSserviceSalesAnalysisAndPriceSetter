@@ -12,6 +12,15 @@ import java.util.List;
 
 public class Update extends Thread {
 
+    private int MINUTE_TO_PERFORM_ANALYSIS = 30;
+    private int HOUR_TO_PERFORM_ANALYSIS = 23;
+
+    private int MINUTE_TO_REDUCE_DISCOUNT = 0;
+    private int HOUR_TO_REDUCE_DISCOUNT = 2;
+
+    private int MINUTE_TO_INCREASE_DISCOUNT = 0;
+    private int HOUR_TO_INCREASE_DISCOUNT = 6;
+
     @Override
     public void run() {
         int count = 0;
@@ -20,21 +29,22 @@ public class Update extends Thread {
         while (true) {
             try {
                 LocalTime currentTime = LocalTime.now();
-                int minuteToCompare = 55;
                 int currentMinute = currentTime.getMinute();
-                int hourToCompare = 23;
                 int currentHour = currentTime.getHour();
-                if ((currentMinute == minuteToCompare) && (currentHour == hourToCompare)) {
-                    update(count);
-                    sleep(100*1000);
-                } else {
-                    sleep(50*1000);
+                if ((currentMinute == MINUTE_TO_PERFORM_ANALYSIS) && (currentHour == HOUR_TO_PERFORM_ANALYSIS)) {
+                    update(0);
+                } else if ((currentMinute == MINUTE_TO_REDUCE_DISCOUNT ) && (currentHour == HOUR_TO_REDUCE_DISCOUNT)) {
+                    update(1);
+                } else if ((currentMinute == MINUTE_TO_INCREASE_DISCOUNT ) && (currentHour == HOUR_TO_INCREASE_DISCOUNT)) {
+                    update(2);
                 }
+                sleep(50*1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     private void update(int count) {
 
