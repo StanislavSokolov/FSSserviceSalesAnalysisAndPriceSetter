@@ -124,6 +124,7 @@ public class Update extends Thread {
                                         if (p.getDiscount() > 22) {
                                             session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getDiscount() - 23), String.valueOf(p.getPrice())));
                                             p.setStatusChangeDiscount(1);
+                                            p.setSaveDiscount(p.getDiscount());
                                             session.save(p);
                                         }
                                     }
@@ -142,7 +143,7 @@ public class Update extends Thread {
                             if (!p.getSupplierArticle().equals("")) {
                                 if (p.getEnChangeDiscount() == 1) {
                                     if (p.getStatusChangeDiscount() == 1) {
-                                        session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getDiscount() + 23), String.valueOf(p.getPrice())));
+                                        session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount() + 23), String.valueOf(p.getPrice())));
                                         p.setStatusChangeDiscount(0);
                                         session.save(p);
                                     }
