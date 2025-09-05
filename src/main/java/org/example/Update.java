@@ -21,6 +21,9 @@ public class Update extends Thread {
     private int MINUTE_TO_INCREASE_DISCOUNT = 0;
     private int HOUR_TO_INCREASE_DISCOUNT = 6;
 
+    private int MINUTE_TO_REPEAT_DISCOUNT = 0;
+    private int HOUR_TO_REPEAT_DISCOUNT = 7;
+
     @Override
     public void run() {
         int count = 0;
@@ -37,7 +40,10 @@ public class Update extends Thread {
                     update(1);
                 } else if ((currentMinute == MINUTE_TO_INCREASE_DISCOUNT ) && (currentHour == HOUR_TO_INCREASE_DISCOUNT)) {
                     update(2);
+                } else if ((currentMinute == MINUTE_TO_REPEAT_DISCOUNT ) && (currentHour == HOUR_TO_REPEAT_DISCOUNT)) {
+                    update(3);
                 }
+
                 sleep(50*1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -134,7 +140,7 @@ public class Update extends Thread {
                     }
                     System.out.println(text);
                 }
-            } else if (count == 2) {
+            }  else if (count == 2) {
                 for (User user : users) {
                     String text = "";
                     if (user.getNameShopWB() != null) {
@@ -143,7 +149,27 @@ public class Update extends Thread {
                                 if (!p.getSupplierArticle().equals("")) {
                                     if (p.getEnChangeDiscount() == 1) {
                                         if (p.getStatusChangeDiscount() == 1) {
-                                            session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount() + 23), String.valueOf(p.getPrice())));
+                                            session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount()), String.valueOf(p.getPrice())));
+                                            p.setStatusChangeDiscount(2);
+                                            session.save(p);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    System.out.println(text);
+                }
+            }  else if (count == 3) {
+                for (User user : users) {
+                    String text = "";
+                    if (user.getNameShopWB() != null) {
+                        if (user.getTokenStandartWB() != null) {
+                            for (Product p: user.getProducts()) {
+                                if (!p.getSupplierArticle().equals("")) {
+                                    if (p.getEnChangeDiscount() == 1) {
+                                        if (p.getStatusChangeDiscount() == 2) {
+                                            session.save(new QueueRequests(user.getId(), "wb", "updateDiscounts", p.getNmId(), String.valueOf(p.getSaveDiscount()), String.valueOf(p.getPrice())));
                                             p.setStatusChangeDiscount(0);
                                             session.save(p);
                                         }
